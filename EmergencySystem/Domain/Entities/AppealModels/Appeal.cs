@@ -1,7 +1,6 @@
 ﻿using Domain.Common;
 using Domain.Entities.AppealTypeModels;
 using Domain.Entities.AppUSerModels;
-using Domain.Entities.SubCodeModels;
 using Domain.Entities.TicketModels;
 
 namespace Domain.Entities.AppealModels

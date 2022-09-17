@@ -33,12 +33,12 @@ namespace Service.Mapping
 
             CreateMap<Info, InfoDto>().ReverseMap();
             CreateMap<InfoTranslate, InfoTranslateDto>().ReverseMap();
-           // CreateMap<Appeal, AppealDto>().ReverseMap();
+            // CreateMap<Appeal, AppealDto>().ReverseMap();
             CreateMap<AppealType, AppealTypeDto>().ReverseMap();
             CreateMap<AppealDto, Appeal>()
-                .ForMember(c => c.AppealTypes, opt => opt.MapFrom(c => c.AppealTypes.Select(v=>new AppealType() { Id=v }))).ReverseMap();
+                .ForMember(c => c.AppealTypes, opt => opt.MapFrom(c => c.AppealTypes.Select(v => new AppealType() { Id = v }))).ReverseMap();
             CreateMap<AppealTypeTranslate, AppealTypeTranslateDto>().ReverseMap();
-            
+
         }
     }
 }

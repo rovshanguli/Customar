@@ -1,6 +1,4 @@
-﻿using Service.DTOs.AppealType;
-
-namespace Service.DTOs.Appeal
+﻿namespace Service.DTOs.Appeal
 {
     public class AppealDto
     {

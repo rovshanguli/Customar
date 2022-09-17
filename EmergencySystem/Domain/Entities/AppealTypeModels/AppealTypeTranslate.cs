@@ -7,6 +7,6 @@ namespace Domain.Entities.AppealTypeModels
         public int AppealId { get; set; }
         public string LangCode { get; set; }
         public string Name { get; set; }
-        
+
     }
 }
