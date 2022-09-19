@@ -12,6 +12,5 @@ phases:
       - dotnet eb package
 artifacts:
   files:
-    - '**/*'
-  base-directory: ./bin/Release/net6.0/
+    - ./EmergencySystem/Web/bin/Release/net6.0/*
   discard-paths: yes
