@@ -12,5 +12,6 @@ phases:
       - dotnet eb package
 artifacts:
   files:
-    - ./bin/Release/net6.0/Web.dll
+    - '**/*'
+  base-directory: ./bin/Release/net6.0/
   discard-paths: yes
