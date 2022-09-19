@@ -8,9 +8,9 @@ phases:
       - dotnet tool install -g Amazon.ElasticBeanstalk.Tools
   build:
     commands:
-      - cd Web
+      - cd EmergencySystem
       - dotnet eb package
 artifacts:
   files:
-    - ./EmergencySystem/Web/bin/Release/net6.0/Web.exe
+    - ./Web/bin/Release/net6.0/Web.exe
   discard-paths: yes
