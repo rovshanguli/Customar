@@ -7,6 +7,7 @@ namespace Domain.Entities.TicketStatusModels
     {
         public string Icon { get; set; }
         public int Level { get; set; }
+        public string Color { get; set; }
         public List<TicketStatusHistory> TicketStatusHistories { get; set; }
         public List<TicketStatusTranslate> Translate { get; set; }
 

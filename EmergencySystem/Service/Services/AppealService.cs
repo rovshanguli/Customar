@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.AppealModels;
+using Microsoft.EntityFrameworkCore;
 using Service.Services.Interfaces;
 
 namespace Service.Services
@@ -18,9 +19,20 @@ namespace Service.Services
         }
 
 
+        public Task<Appeal> GetWithAppealTypes(int id)
+        {
+            var data = _context.Appeals.Where(x => x.Id == id)
+                .Include(x => x.AppealTypes)
+                .ThenInclude(x => x.Translates)
+                .FirstOrDefaultAsync();
+            return data;
+        }
 
-
-
+        public Task<IEnumerable<Appeal>> GetUserAppeals(string userId)
+        {
+            var data = _context.Appeals.Where(x => x.CreatedByID == userId).AsEnumerable();
+            return Task.FromResult(data);
+        }
 
 
 

@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using Domain.Entities.InfoModels;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.DTOs.Info;
 using Service.Services.Interfaces;
+using Web.Services.FileService;
 
 namespace Web.Controllers
 {
@@ -10,18 +13,26 @@ namespace Web.Controllers
     {
         private readonly IInfoService _service;
         private readonly IMapper _mapper;
-        public InfoController(IInfoService service, IMapper mapper)
+        private readonly IFileService _file;
+        private readonly ICurrentUserService _currentUser;
+        public InfoController(IInfoService service,
+            IMapper mapper,
+            IFileService file,
+            ICurrentUserService currentUser
+            )
         {
             _service = service;
             _mapper = mapper;
+            _file = file;
+            _currentUser = currentUser;
         }
 
         [HttpPost]
         [Route("Create")]
-        public async Task<IActionResult> Create([FromBody] InfoDto iCreate)
+        public async Task<IActionResult> Create([FromForm] InfoDto iCreate)
         {
             var entity = _mapper.Map<Info>(iCreate);
-            await _service.CreateAsync(entity);
+            entity.ImgUrl = await _file.SaveFile(iCreate.Photo);
             return Ok();
         }
 
@@ -52,12 +63,15 @@ namespace Web.Controllers
             return Ok(dto);
         }
 
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
         [Route("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            var entities = await _service.GetAllAsync();
+            var entities = await _service.GetInfosWithTranslate();
             var dtos = _mapper.Map<List<InfoDto>>(entities);
+
             return Ok(dtos);
         }
     }

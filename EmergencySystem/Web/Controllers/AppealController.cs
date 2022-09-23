@@ -3,20 +3,33 @@ using Domain.Entities.AppealModels;
 using Microsoft.AspNetCore.Mvc;
 using Service.DTOs.Appeal;
 using Service.Services.Interfaces;
+using UploadStream;
+using Web.Services.FileService;
 
 namespace Web.Controllers
 {
     public class AppealController : BaseController
     {
+
+        [TempData]
+        public int AppealId { get; set; } = 2;
         private readonly IAppealService _service;
         private readonly IAppealTypeService _appealTypeService;
-
+        private readonly ILogger<AppealController> _logger;
         private readonly IMapper _mapper;
-        public AppealController(IAppealService service, IMapper mapper, IAppealTypeService appealTypeService)
+        private readonly IFileService _file;
+        public AppealController(IAppealService service,
+            IMapper mapper,
+            IAppealTypeService appealTypeService,
+            ILogger<AppealController> logger,
+            IFileService file
+            )
         {
             _service = service;
             _mapper = mapper;
             _appealTypeService = appealTypeService;
+            _logger = logger;
+            _file = file;
         }
 
 
@@ -26,18 +39,49 @@ namespace Web.Controllers
         {
             var entity = _mapper.Map<Appeal>(appealCreate);
             entity.AppealTypes = await _appealTypeService.GetAllWithId(appealCreate.AppealTypes);
-            await _service.CreateAsync(entity);
-            return Ok();
+            var data = await _service.CreateAsync(entity);
+            AppealId = data.Id;
+            return Ok(data.Id);
         }
 
-        [HttpPut]
-        [Route("Update")]
-        public async Task<IActionResult> Update([FromBody] AppealDto appealUpdate)
+
+        [HttpPost]
+        [Route("AddFile")]
+        public async Task<IActionResult> AddFile()
         {
-            var entity = _mapper.Map<Appeal>(appealUpdate);
-            await _service.UpdateAsync(entity);
-            return Ok();
+            var appeal = await _service.GetAsync(AppealId);
+
+            var url = "";
+            await this.StreamFiles(async x =>
+            {
+                if (x.ContentType.Contains("image"))
+                {
+                    var appeal = await _service.GetAsync(AppealId);
+                    url = await _file.SaveStreamFile(x);
+                    appeal.PhotoUrl = url;
+                    await _service.UpdateAsync(appeal);
+                }
+
+
+                if (x.ContentType.Contains("audio"))
+                {
+                    var appeal = await _service.GetAsync(AppealId);
+                    appeal.AudioUrl = await _file.SaveStreamFile(x);
+                    await _service.UpdateAsync(appeal);
+                }
+
+                if (x.ContentType.Contains("video"))
+                {
+                    var appeal = await _service.GetAsync(AppealId);
+                    appeal.VideoUrl = await _file.SaveStreamFile(x);
+                    await _service.UpdateAsync(appeal);
+                }
+            });
+
+
+            return Ok(url);
         }
+
 
         [HttpDelete]
         [Route("Delete/{id}")]
@@ -52,8 +96,9 @@ namespace Web.Controllers
         [Route("Get/{id}")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
-            var entity = await _service.GetAsync(id);
-            var dto = _mapper.Map<AppealDto>(entity);
+            var entity = await _service.GetWithAppealTypes(id);
+
+            var dto = _mapper.Map<AppealGetDto>(entity);
             return Ok(dto);
         }
 

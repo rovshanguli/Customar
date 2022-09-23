@@ -33,6 +33,15 @@ namespace Web.Controllers
             return token;
         }
 
+        [HttpGet]
+        [Route("GetUser/{id}")]
+        public async Task<IActionResult> GetUser(string id)
+        {
+            var user = await _service.GetUser(id);
+            return Ok(user);
+        }
+
+
         [HttpPost]
         [Route("CreateRole")]
         public async Task CreateRole()
@@ -45,6 +54,8 @@ namespace Web.Controllers
                 }
             }
         }
+
+
 
 
 

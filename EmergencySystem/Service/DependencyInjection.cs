@@ -19,8 +19,6 @@ namespace Service
             services.AddScoped<IAppealService, AppealService>();
             services.AddScoped<IAppealTypeService, AppealTypeService>();
             services.AddScoped<IToken, Token>();
-
-
             return services;
         }
     }

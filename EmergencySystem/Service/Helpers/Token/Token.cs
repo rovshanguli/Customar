@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Domain.Entities.AppUSerModels;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -13,16 +14,16 @@ namespace Service.Helpers.Token
         {
             _configuration = configuration;
         }
-        public string CreateToken(string email, string username, List<string> roles)
+        public string CreateToken(AppUser user, List<string> roles)
         {
             var claims = new List<Claim>
             {
-            new Claim(JwtRegisteredClaimNames.Sub, username),
-              new Claim(JwtRegisteredClaimNames.Sub, email),
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+            new Claim(JwtRegisteredClaimNames.Sub, user.Email),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(ClaimTypes.NameIdentifier, username)
+            new Claim(ClaimTypes.NameIdentifier,user.Id )
             };
-
+            
             roles.ForEach(role =>
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));

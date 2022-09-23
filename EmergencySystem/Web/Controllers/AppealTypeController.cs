@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Domain.Entities.AppealTypeModels;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.DTOs.AppealType;
 using Service.Services.Interfaces;
@@ -20,10 +22,12 @@ namespace Web.Controllers
 
         [HttpGet]
         [Route("GetAll")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> GetAll()
         {
             var appealTypes = await _appealTypeService.GetAllWithTranslates();
-            return Ok(appealTypes);
+            var appealTypesDto = _mapper.Map<List<AppealTypeDto>>(appealTypes);
+            return Ok(appealTypesDto);
         }
 
         [HttpGet]

@@ -17,7 +17,6 @@ namespace Domain.Entities.AppealModels
 
 
 
-        //public List<int> AppealTypesId { get; set; }
         public List<AppealType> AppealTypes { get; set; }
         public string TicketId { get; set; }
         public Ticket Ticket { get; set; }
